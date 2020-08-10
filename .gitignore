@@ -1,0 +1,11 @@
+#output folders
+SIGMA_output/*
+SIGMA PAPER/*
+
+#build folders (release or debug)
+build*
+
+#in case building process is piped to a text file
+building_output*
+
+*.asv
