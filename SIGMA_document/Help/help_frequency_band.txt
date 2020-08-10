@@ -1,0 +1,19 @@
+The EEG is typically described in terms of rhythmic activity and transients.
+The rhythmic activity is divided into bands by frequency. To some degree, 
+these frequency bands are a matter of nomenclature 
+(i.e., any rhythmic activity between 8–12 Hz can be described as "alpha"), 
+but these designations arose because rhythmic activity within a certain 
+frequency range was noted to have a certain distribution over the scalp or
+ a certain biological significance. Frequency bands are usually extracted 
+using spectral methods (for instance Welch) as implemented for instance in
+ freely available EEG software such as EEGLAB or the Neurophysiological 
+Biomarker Toolbox. 
+Computational processing of the EEG is often named quantitative electroencephalography (qEEG).
+Most of the cerebral signal observed in the scalp EEG falls in the 
+range of 1–20 Hz 
+(activity below or above this range is likely to be artifactual, 
+under standard clinical recording techniques).
+Waveforms are subdivided into bandwidths known as alpha, beta, 
+theta, and delta to signify the majority of the EEG used in clinical practice.
+
+reference : https://en.wikipedia.org/wiki/Electroencephalography

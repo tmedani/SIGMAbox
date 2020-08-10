@@ -1,0 +1,9 @@
+To use correctly the GUI, user should fellow simply the steps in order, as shown; the first step is the data loading.  By a simple click on the push button ‘Load’ user can select the directory containing his data. A browser window will open and then user can choose the data path.
+The file subject_xx.mat must contain a structure named: 
+s_EEG and this structure should contain at least these fields : 
+	data : [16×20000×14 double]
+         	labels : [1 1 2 2 1 1 1 1 2 2 1 2 1 2]
+    	subject_number : 1
+     	sampling_rate : 2000
+     	channel_names : {1×16 cell}
+If the data format is correct, the toolbox displays the subjects that can be used for the computation of the machine learning algorithms. 

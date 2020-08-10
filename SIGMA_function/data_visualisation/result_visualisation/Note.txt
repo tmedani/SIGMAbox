@@ -1,0 +1,5 @@
+The difference between 
+Sigma_result_visualisation_gui_old & Sigma_result_visualisation_gui
+
+manner to compute and plot the roc curve 
+$236- 242

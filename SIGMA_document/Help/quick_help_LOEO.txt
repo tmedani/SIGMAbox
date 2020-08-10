@@ -1,0 +1,4 @@
+LOEO : Leave One Epoch/Example Out
+Leave only one example out and train with all the rest of the example. When the training is over, the prediction is computed on the one leaved example.
+This process is repeated m times until the examples are all used.
+Note : In the case of custom feature classification, only the LOEO should used. 

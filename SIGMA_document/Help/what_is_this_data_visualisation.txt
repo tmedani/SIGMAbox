@@ -1,0 +1,3 @@
+Data Visulisation allows you to get an averview on your EEG data.
+You can display the signals and the topography of the EEG on the 
+head model.

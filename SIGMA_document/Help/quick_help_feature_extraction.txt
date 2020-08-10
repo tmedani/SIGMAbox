@@ -1,0 +1,15 @@
+The feature extraction process is used to extract the feature (or the descriptor)
+from the data (EEG siganls in this case).              
+The output of this process is stored in a matrix  with the size (N x M) 
+where N is the number of features and M is the number of examples ( or epochs).
+
+The linear separability is a test based on the perceptron algorithm to check if the 
+data stored in the feature matrix could be separated by a linear method.                                
+                                                       
+For advanced user, the the eature matrix is stored in the 'feature_result' structure,
+user can extract this matrice by exporting the SIGMA results to Matlab using the 
+push button  'Export to Matlab' or with a right click on on the 'Feature Matrix' panel 
+then 'export to matlab ', this will generate two structure in matlab workspace.
+Then use this code on the terminal to extract the feature matrix:
+feature_matrix = feature_result.o_feature_matrix.
+More information could be found on the 'feature_result' structure.

@@ -1,0 +1,7 @@
+
+
+
+
+SIGMA  (Signal Processing and Machine Learning)  is  an open-source  software  package  for  EEG signal processing, data classification, machine learning  and   imaging brain source and potential topography from  electrophysiological signals.
+
+SIGMA  is  developed  by  the   the Brain Compter Interface team, in the Brain Plasticity Unit, at the ESPCI, Paris

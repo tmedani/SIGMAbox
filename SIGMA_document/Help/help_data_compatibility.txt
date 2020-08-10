@@ -1,0 +1,13 @@
+To load correctly the data (subject), the file should be a matfile and
+have a name with format subject_xx.mat, where xx is the number of the
+subject (01, 02, 14,...).
+This matlab file must contain a structure named:"s_EEG" and this structure 
+should contain at least these fields : 
+	data : [16×20000×14 double]
+    labels : [1 1 2 2 1 1 1 1 2 2 1 2 1 2]
+    subject_number : 1
+    sampling_rate : 2000
+    channel_names : {1×16 cell}
+If the data format is correct, the toolbox displays the subjects in the 
+textbox. For mor detail please refer to the SIGMA Manual (SIGMA_document),
+==> Link to the Manual.
