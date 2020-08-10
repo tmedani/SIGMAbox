@@ -1,7 +1,7 @@
 #output folders
 SIGMA_output/*
-SIGMA PAPER/*
-
+SIGMA_PAPER/*
+SIGMA_addOns/*
 #build folders (release or debug)
 build*
 
