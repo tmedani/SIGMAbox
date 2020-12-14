@@ -1,46 +1,43 @@
-function Set_all_frequency_button_on(handles, hObject)
+function init_parameter=Sigma_notch_filter_init(init_parameter,notch_freq,notch_band_width,notch_order)
 %%%------------------------------------------------------------------------
-%   Set_all_frequency_button_on(handles, hObject)
+%   init_parameter = Sigma_notch_filter_init(init_parameter,lowPass_freq,lowPass_order)
 %
 %   Function task:
-%   Set the state of all frequency button on 'on'
-%   
+%   It initialize the value used for the Notch filter 
+%   This function is used by the function 'Sigma_frequency_initialisation
+%   It includ on the structure init_parameter the information related to
+%   the choice of the user regarding the  frequency bands to study
+%
 %   Inputs :
-%   handles : structure containing GUI informations
-%   hObject : necessary for the GUI management
+%   
 %
-%   Outputs : 
-%       
-%   handles : structure containing GUI informations
-%
+%   Outputs :
+%   i
 %--------------------------------------------------------------------------
 %
 %
 %   Main Variables
-%       
 %
-%   Dependencies
-%       
-%
-%   NB: this code is copyrighted. 
+%   NB: this code is copyrighted.
 %   Please refer to copyright info in the file footer.
 %%%------------------------------------------------------------------------
 
-nbButton = length(handles.frequency_button_name);
-%Check its own value and add it to other buttons
-check_value = get(handles.DP_all, 'Value');
-for cButton = 1:nbButton
-    set(eval( ['handles.' , handles.frequency_button_name{cButton} ]), 'Value', check_value);
+
+
+%% 5: Definition of the Notch filter default value
+notch_filter_info = {['Notch Filter (freq,order,band width) : (' num2str(notch_freq) 'Hz,' num2str(notch_order) ',' num2str(notch_band_width) 'Hz)' ]};
+%Output For the Notch Filter
+init_parameter.notch_filter.notch_freq = notch_freq;
+init_parameter.notch_filter.notch_order = notch_order;
+init_parameter.notch_filter.notch_band_width = notch_band_width;
+init_parameter.notch_filter.notch_filter_info = notch_filter_info;
+
 end
 
-guidata(hObject, handles);
-
-end
-
-%% END OF FILE
+%%
 % % %----------------------------------------------------------------------
 % % %                  Brain Computer Interface team
-% % % 
+% % %
 % % %                            _---~~(~~-_.
 % % %                          _{        )   )
 % % %                        ,   ) -~~- ( ,-' )_
@@ -51,14 +48,16 @@ end
 % % %                              ~~~~ {_ -_(())
 % % %                                     `\  }
 % % %                                       { }
-% % %   File created by A. BAELDE
-% % %   Creation Date : 13/01/2018
+% % %   File created by Takfarinas MEDANI
+% % %   Creation Date : 10/10/2016
 % % %   Updates and contributors :
-
+% % %   29/01/2018, T. MEDANI :
+% % %
+% % %
 % % %   Citation: [creator and contributor names], comprehensive BCI
 % % %             toolbox, available online 2016.
-% % %           
-% % %   Contact info : francois.vialatte@espci.fr          
+% % %
+% % %   Contact info : francois.vialatte@espci.fr
 % % %   Copyright of the contributors, 2016
 % % %   Creative Commons License, CC-BY-NC-SA
 % % %----------------------------------------------------------------------

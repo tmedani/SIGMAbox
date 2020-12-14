@@ -37,17 +37,8 @@ if isfield(handles,'sigma_load_session')
     if handles.sigma_load_session == 1
         score = 1;
         message = 'Data are correct' ;
-        if ~handles.init_parameter.method == 99
-            for l_sub = 1 : length(handles.init_parameter.subject_index)
-                files(l_sub).name = ['subject_' ...
-                    num2str(handles.init_parameter.subject_index(l_sub))...
-                                                    '.mat'];
-            end
-        else
-            files = [];  
-            % modificatio Takfarinas 05/05/2019
-            [ score, files, message ] = DL_data_compatibility(handles);
-
+        for l_sub = 1 : length(handles.init_parameter.subject_index)
+            files(l_sub).name = ['subject_' num2str(handles.init_parameter.subject_index(l_sub)) '.mat'];
         end
         sampling_rate = handles.init_parameter.sampling_rate;
     end

@@ -33,12 +33,7 @@ handles.init_parameter = Sigma_frequency_initialisation(handles.init_parameter);
 % /§§§§§!!!!! modify this function to allow for resampling : init_parameter=Sigma_resampling_init(init_parameter)
 
 % compute filter parameters
-wait_title = 'Feature extraction ';
-wait_message = 'Filtring data / Band extraction ...';
-h_wait = Sigma_waiting(wait_title, wait_message);
-    handles.init_parameter = Sigma_filter_parameter(handles.init_parameter);
-delete(h_wait)
-
+handles.init_parameter = Sigma_filter_parameter(handles.init_parameter);
 handles.init_method = Sigma_method_initialisation(handles.init_parameter);
 
 % make the gui invisible

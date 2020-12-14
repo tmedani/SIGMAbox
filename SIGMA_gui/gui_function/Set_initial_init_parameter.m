@@ -39,46 +39,29 @@ function handles = Set_initial_init_parameter(handles, hObject)
 if ~isfield(handles,'init_method')
     init_parameter = [];
     %handles.init_parameter.sigma_creat_session=1;
-    session = questdlg('Wellcome to Sigma, Please choose : ', ...
-        'SIGMA Start', ...
-        'New Session','Load Session','Cancel','New Session');
-    switch session
-        case 'New Session'            
-            choice = questdlg('Do you want to specify the name of the session?', ...
-                'SIGMA Creat Session', ...
-                'Specify Name','Default Name','Cancel','Cancel');
-            % Handle response
-            switch choice
-                case 'Specify Name'
-                    default_name = 0;
-                    init_parameter.default_name = default_name;
-                    handles.session_canceled=0;
-                    
-                case 'Default Name'
-                    default_name = 1;
-                    init_parameter.default_name = default_name;
-                    handles.session_canceled=0;
-                    
-                case 'Cancel'
-                    handles.session_canceled=1;
-                    guidata(hObject, handles);
-                    return
-                    
-                case '' % handle is closed
-                    %display('toto')
-                    handles.session_canceled=1;
-                    guidata(hObject, handles);
-                    return
-            end
-        case 'Load Session'
-                handles.load_session_from_start = 1;
-                handles.session_canceled = 0;
-                %Sigma_load_session_from_gui(hObject, [], handles)
-        case 'Cancel'            
+    
+    choice = questdlg('Do you want to specify the name of the session?', ...
+        'SIGMA Creat Session', ...
+        'Specify Name','Default Name','Cancel','Cancel');
+    % Handle response
+    switch choice
+        case 'Specify Name'
+            default_name = 0;
+            init_parameter.default_name = default_name;
+            handles.session_canceled=0;           
+
+        case 'Default Name'
+            default_name = 1;
+            init_parameter.default_name = default_name;
+            handles.session_canceled=0;
+            
+        case 'Cancel'
             handles.session_canceled=1;
             guidata(hObject, handles);
-            return            
+            return
+            
         case '' % handle is closed
+            %display('toto')
             handles.session_canceled=1;
             guidata(hObject, handles);
             return
@@ -202,7 +185,6 @@ else
 end
 handles.init_parameter.svm_parameter.condition = condition;
 
-
 %  Update handles structure
 guidata(hObject, handles);
 
@@ -225,7 +207,6 @@ end
 % % %   File created by A. BAELDE
 % % %   Creation Date : 13/01/2018
 % % %   Updates and contributors :
-% % %   Takfarinas Medani : Add the option to load session
 
 % % %   Citation: [creator and contributor names], comprehensive BCI
 % % %             toolbox, available online 2016.

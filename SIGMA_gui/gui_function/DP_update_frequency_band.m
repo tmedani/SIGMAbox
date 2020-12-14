@@ -27,26 +27,22 @@ function handles = DP_update_frequency_band(handles, hObject)
 %%%------------------------------------------------------------------------
 % something strange
 handles.init_parameter.apply_filter = ones(size(handles.init_parameter.method));
-handles.frequency_button_name = handles.init_parameter.frequency_button_name;
 
 % Update frequency bands and check box state
 % find number of button
-nbButton = length(handles.init_parameter.frequency_button_name);
+nbButton = length(handles.frequency_button_name);
 % load selected bands
 selected_band = handles.init_parameter.selected_band;
 
 for cButton = 1:(nbButton-1) % loop on all buttons except the "all" one
     % Get value of button
     check_value = get(eval( ['handles.' , handles.frequency_button_name{cButton} ]), 'Value');
-%      check_value = get(eval( ['handles.' , ...
-%          handles.init_parameter.frequency_button_name{cButton} ]), 'Value');
     % Modify selected band
     selected_band = DP_modify_selected_band(selected_band, cButton, check_value);
 end
 
 
 % Code the behavior of "all" button
-
 if(length(selected_band) == (nbButton-1))
     set(eval( ['handles.' , handles.frequency_button_name{nbButton} ]), 'Value', 1);
 else

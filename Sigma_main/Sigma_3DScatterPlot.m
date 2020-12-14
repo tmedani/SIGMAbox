@@ -4,34 +4,35 @@ function Sigma_3DScatterPlot(init_parameter,init_method,feature_result)
 %
 %   Function task:
 %   Load the features provided by the user
-%
+%   
 %   Inputs :
 %   handles : structure containing GUI informations
 %   hObject : necessary for the GUI management
 %
-%   Outputs :
-%
+%   Outputs : 
+%       
 %   handles : structure containing GUI informations
 %
 %--------------------------------------------------------------------------
 %
 %
 %   Main Variables
-%
+%       
 %
 %   Dependencies
+%       
 %
-%
-%   NB: this code is copyrighted.
+%   NB: this code is copyrighted. 
 %   Please refer to copyright info in the file footer.
 %%%------------------------------------------------------------------------
 
 
-% TODO : The hyper plan should be added from the classification method
+ % TODO : The hyper plan should be added from the classification method
 
-    data_in.feature_result=feature_result;
-    data_in.init_parameter=init_parameter;
-    data_in.init_method=init_method;
+data_in.feature_result=feature_result;
+data_in.init_parameter=init_parameter;
+data_in.init_method=init_method;
+
 % Check the size of the best matrix!
 if size(feature_result.o_best_features_matrix,1)<3
     msgbox('The Best feature matrix contain less then 3 features, 3D presentation is impossible ...',...

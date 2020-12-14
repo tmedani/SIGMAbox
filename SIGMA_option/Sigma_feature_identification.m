@@ -63,7 +63,7 @@ if isfield(features_results,'o_fourier_power_type')
 end
 
 channel_name=init_parameter.channel_name;
-channel_method = features_results.channel_method;
+channel_method=features_results.channel_method;
 
 if isfield(features_results,'performance_ranking')
     performance_ranking=features_results.performance_ranking;
@@ -120,16 +120,16 @@ if init_parameter.compute_cross_term_feature==1
     
     idx_best_features=best_features_cross_term;
     performance_ranking=nan(size(idx_best_features));
-    
 end
 disp('********************* Features Identification ************************')
 
-best_channel_method = channel_method(idx_best_features,:);
+best_channel_method=channel_method(idx_best_features,:);
 best_organisation=[];
 
 %% Section 2 - Identification of the features
 % Find the best method name associated with best channel
-for ind2=1:length(idx_best_features)    
+for ind2=1:length(idx_best_features)
+    
     % used only on the cross term
     if exist('index_to_stop')
         if ind2==index_to_stop+1

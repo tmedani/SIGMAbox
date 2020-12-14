@@ -1,5 +1,5 @@
 function feature_result = Sigma_feature_extraction(init_parameter,...
-    init_method,feature_result)
+                                              init_method,feature_result)
 %%%------------------------------------------------------------------------
 %   feature_result = Sigma_feature_extraction(init_parameter,...
 %                                             init_method,feature_result)
@@ -130,11 +130,11 @@ for l_subject = 1 : nb_subject
     % The number of channels
     nb_channel((init_parameter.subject(l_subject))) = size(s_EEG.data,1);
     % Test if the subjects have the same number of channels
-    %     if length(unique(nb_channel))>1
-    %         warning('The Sampling rate is not the same in these data');
-    %         feature_result.number_channel_warning = ...
-    %             'data with different number of channel !!';
-    %     end
+%     if length(unique(nb_channel))>1
+%         warning('The Sampling rate is not the same in these data');
+%         feature_result.number_channel_warning = ...
+%             'data with different number of channel !!';
+%     end
     
     % The number of samples (times point)
     nb_samples((init_parameter.subject(l_subject))) = size(s_EEG.data,2);
@@ -161,17 +161,17 @@ for l_subject = 1 : nb_subject
                 end
             end
             feature_result.resample_data_infos = 'data are decimated';
-            %%% plot the data
-            %             figure;
-            %             time_step = 0:1/sampling_rate_by_user:...
-            %           length(data_resampled)...
-            %                       /sampling_rate_by_user-1/sampling_rate_by_user;
-            %             plot(time_step,data_resampled(1,:,1),'b');
-            %             hold on
-            %             time_step = 0:1/sampling_rate:length(data)/...
-            %           sampling_rate-1/sampling_rate;
-            %             plot(time_step,data(1,:,1),'r');
-            %             legend('Downsampled data','Original data')
+    %%% plot the data
+    %             figure;
+    %             time_step = 0:1/sampling_rate_by_user:...
+    %           length(data_resampled)...
+    %                       /sampling_rate_by_user-1/sampling_rate_by_user;
+    %             plot(time_step,data_resampled(1,:,1),'b');
+    %             hold on
+    %             time_step = 0:1/sampling_rate:length(data)/...
+    %           sampling_rate-1/sampling_rate;
+    %             plot(time_step,data(1,:,1),'r');
+    %             legend('Downsampled data','Original data')
         end
         
         if sampling_rate_by_user>sampling_rate
@@ -253,9 +253,9 @@ for l_subject = 1 : nb_subject
         nb_method = length(init_parameter.method);
         for l_method = 1:length(init_parameter.method)
             waitbar(l_subject/nb_subject,h,['FE : Subject ' ...
-                num2str(l_subject) '/' num2str(nb_subject) ...
-                ', Epoch : '  num2str(l_epoch) '/' num2str(size(s_EEG.data,3))...
-                ', Method : ' num2str(l_method) '/' num2str(nb_method)]);
+            num2str(l_subject) '/' num2str(nb_subject) ...
+            ', Epoch : '  num2str(l_epoch) '/' num2str(size(s_EEG.data,3))...
+            ', Method : ' num2str(l_method) '/' num2str(nb_method)]);
             
             if getappdata(h,'Cancel')
                 break
@@ -312,7 +312,7 @@ for l_subject = 1 : nb_subject
             if sigma_show_comment == 1   ; ...
                     disp('Compute the feature of the current method...') ;
             end
-            % Execute the associated method défined in the scrupt
+            % Execute the associated method défined in the scrupt 
             % "init_method(l_method).method_name"
             execute_as = 2; % (1 for the script, 2 for the function)
             if execute_as == 1
@@ -324,7 +324,7 @@ for l_subject = 1 : nb_subject
                     ).method_name) ;
             else
                 % Execute as a function
-                if sigma_show_comment == 1
+                if sigma_show_comment == 1 
                     disp('execute as a function');
                 end
                 feature_result = eval([init_method(...
@@ -391,12 +391,10 @@ delete(h) %% close the wait bare
 %% Set the labels to 1 and -1
 [origin_label, new_label] = Sigma_set_label(label);
 temp = unique(new_label);
-amount_classe_one = -1;
-amount_classe_two = -1;
 if isempty(temp)
     %msgbox('SIGMA Error : There is no label, please check your data ...');
     msgbox('SIGMA Warning : There is no label, please check your data ...',...
-        'SIGMA Warning','warn')
+    'SIGMA Warning','warn')
     return
 end
 if length(temp)>2
@@ -410,36 +408,17 @@ if length(temp)>2
         return; % Or break or continue
     end
     disp('continue')
-    %% Compute the element of each classe
-    amount_classe_one = length(find(new_label == temp(1)));
-    amount_classe_two = length(find(new_label == temp(2)));
-    
-elseif length(temp) == 1
-    promptMessage = sprintf('There is only one label');
-    fprintf(promptMessage)
-    %%
-    promptMessage = sprintf(['There is is only one label on your data,'...
-        '\n Do you want to Continue processing,'...
-        '\n or Cancel to abort processing?']);
-    button = questdlg(promptMessage, 'SIGMA Warning', 'Continue',...
-        'Cancel', 'Continue');
-    if strcmpi(button, 'Cancel')
-        disp('aborted')
-        return; % Or break or continue
-    end
-    disp('continue')
-    %% Compute the element of each classe
-    amount_classe_one = length(find(new_label == temp(1)));
-    amount_classe_two = 0;
-else
-    amount_classe_one = length(find(new_label == temp(1)));
-    amount_classe_two = length(find(new_label == temp(2)));
 end
+
+%% Compute the element of each classe
+amount_classe_one = length(find(new_label == temp(1)));
+amount_classe_two = length(find(new_label == temp(2)));
+
 if amount_classe_one ~= amount_classe_two
     disp('SIGMA >> Your data is not equilbred')
-    disp(['Class ' num2str(temp(1)) ': ' num2str(amount_classe_one) ', rate = ' ...
+    disp(['Class ' num2str(temp(1)) ', rate = ' ...
         num2str(100*amount_classe_one/length(new_label)) ' %'])
-    disp(['Class ' num2str(temp(2)) ': ' num2str(amount_classe_two) ', rate = ' ...
+    disp(['Class ' num2str(temp(2)) ', rate = ' ...
         num2str(100*amount_classe_two/length(new_label)) ' %'])
 end
 

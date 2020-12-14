@@ -88,49 +88,34 @@ for Nmethode=1:length(init_parameter.method)
 end
 
 
-%% Normalistion of the feature matrix & save the mean and the std
-
-% [Z,mu,sigma] = (zscore((feature_result.o_features_matrix)'));
-% feature_result.o_features_matrix_normalize=Z';
-% feature_result.o_features_matrix_mean=mu';
-% feature_result.o_features_matrix_std=sigma';
-feature_result.o_features_matrix = o_features_matrix;
-feature_result = Sigma_zscore_for_feature(feature_result);
-feature_result.o_features_matrix_zscore = ...
-                                feature_result.o_features_matrix_normalize;
-% ompose the normalized version
-feature_result.o_features_matrix = feature_result.o_features_matrix_normalize;
-%% Compute the cross terme here ??
-o_features_matrix = feature_result.o_features_matrix;
+%% Comput the cross terme here ??
 if init_parameter.compute_cross_term_feature==1
     % Compute the cross terms
     [feature_matrix_all_term, ~,...
         feature_matrix_cross_term_id] = Sigma_creat_cross_term_feature...
         (o_features_matrix);
-    o_features_matrix_with_cross_term = feature_matrix_all_term;
-    o_features_matrix = feature_matrix_all_term;
-    feature_result.feature_matrix_cross_term_id = ...
+    o_features_matrix=feature_matrix_all_term;
+    feature_result.feature_matrix_cross_term_id=...
         feature_matrix_cross_term_id;
-    feature_result.o_features_matrix_with_cross_term = ...
-    o_features_matrix_with_cross_term;
 elseif isfield(feature_result,'feature_matrix_cross_term_id')
     feature_result = rmfield(feature_result,...
         'feature_matrix_cross_term_id');
 end
-
-
 feature_result.nb_epoch=size(o_features_matrix,2);
 feature_result.nb_features=size(o_features_matrix,1);
 
-feature_result.channel_method = channel_method;
-%feature_result.o_features_matrix_without_cross_term = o_features_matrix;
-
-
-feature_result.o_features_matrix = o_features_matrix;
-feature_result.o_features_matrix_id = o_features_matrix_id;
-feature_result.o_features_matrix_id_infos = ...
+feature_result.channel_method=channel_method;
+feature_result.o_features_matrix=o_features_matrix;
+feature_result.o_features_matrix_id=o_features_matrix_id;
+feature_result.o_features_matrix_id_infos=...
     {' N° Method  N°Channel   N°Band '};
 
+
+%% Normalistion of the feature matrix & save the mean and the std
+[Z,mu,sigma] = (zscore((feature_result.o_features_matrix)'));
+feature_result.o_features_matrix_normalize=Z';
+feature_result.o_features_matrix_mean=mu';
+feature_result.o_features_matrix_std=sigma';
 
 %% Check the separabality of the data 
 label=feature_result.label;
@@ -140,11 +125,11 @@ label=feature_result.label;
 feature_result.linear_Separability=linear_Separability;
 
 %% Check the variance of the feature
-% If the variance is somewhere eqaule to zeros == remplace par the nearest
-zero_variance = find(var(feature_result.o_features_matrix') == 0);
+% If the variance is somewhere eqaule to zeros == remplace par the rearest
+zero_variance = find(var(feature_result.o_features_matrix') ==0);
 if ~isempty(zero_variance)
     feature_result.o_features_matrix(zero_variance,:) = ...
-        ((feature_result.o_features_matrix(zero_variance-1,:)+ feature_result.o_features_matrix(zero_variance+1,:)))/2;
+        ((feature_result.o_features_matrix(zero_variance-1,:)+feature_result.o_features_matrix(zero_variance+1,:)))/2;
     feature_result.zero_variance = zero_variance;
 end
 %% Display the results
@@ -160,8 +145,8 @@ if init_parameter.sigma_show_comment==1
             && (size(o_features_matrix,2)==size_matrix(1,2)) );
     end
     if condition
-        disp('====================   Informations   =================')
-        disp('The features matrix has the right dimension')
+        display('====================   Informations   =================')
+        display('The features matrix has the right dimension')
         display(['The dimension of the feature matrix is: ' ...
             num2str(size(o_features_matrix))])
         display(['The list of subject is: ' ...

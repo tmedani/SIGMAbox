@@ -121,7 +121,9 @@ guidata(hObject, handles);
 function feature_3D_distribution_Callback(hObject, eventdata, handles)
 % hObject    handle to feature_3D_distribution (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA) 
+% handles    structure with handles and user data (see GUIDATA)
+
+ 
 if ~isfield(handles,'input_feature')
     msgbox('There is nothing to display','SIGMA error','error');
     return;

@@ -1,46 +1,45 @@
-function Set_all_frequency_button_on(handles, hObject)
+function init_parameter=Sigma_low_pass_filter_init(init_parameter,lowPass_freq,lowPass_order)
 %%%------------------------------------------------------------------------
-%   Set_all_frequency_button_on(handles, hObject)
+%   init_parameter=Sigma_low_pass_filter_init(init_parameter,lowPass_freq,lowPass_order)
 %
 %   Function task:
-%   Set the state of all frequency button on 'on'
-%   
+%   It initialize the value used for the low pass filter 
+%   This function is used by the function 'Sigma_frequency_initialisation
+%   It includ on the structure init_parameter the information related to
+%   the choice of the user regarding the  frequency bands to study
+%
 %   Inputs :
-%   handles : structure containing GUI informations
-%   hObject : necessary for the GUI management
+%   
 %
-%   Outputs : 
-%       
-%   handles : structure containing GUI informations
-%
+%   Outputs :
+%   i
 %--------------------------------------------------------------------------
 %
 %
 %   Main Variables
-%       
 %
-%   Dependencies
-%       
-%
-%   NB: this code is copyrighted. 
+%   NB: this code is copyrighted.
 %   Please refer to copyright info in the file footer.
 %%%------------------------------------------------------------------------
 
-nbButton = length(handles.frequency_button_name);
-%Check its own value and add it to other buttons
-check_value = get(handles.DP_all, 'Value');
-for cButton = 1:nbButton
-    set(eval( ['handles.' , handles.frequency_button_name{cButton} ]), 'Value', check_value);
+
+
+%% 2: Definition of the LowPass filter default value
+if init_parameter.low_pass_filter == 1
+    lowPass_filter_info = {['LowPass Filter (freq,order) : ('...
+        num2str(lowPass_freq) 'Hz,' num2str(lowPass_order) ')' ]};
+    % Out put For the LowPassFilter
+    init_parameter.lowPass_filter.lowPass_freq = lowPass_freq;
+    init_parameter.lowPass_filter.lowPass_order = lowPass_order;
+    init_parameter.lowPass_filter.lowPass_filter_info = lowPass_filter_info;
 end
 
-guidata(hObject, handles);
 
 end
-
-%% END OF FILE
+%%
 % % %----------------------------------------------------------------------
 % % %                  Brain Computer Interface team
-% % % 
+% % %
 % % %                            _---~~(~~-_.
 % % %                          _{        )   )
 % % %                        ,   ) -~~- ( ,-' )_
@@ -51,14 +50,16 @@ end
 % % %                              ~~~~ {_ -_(())
 % % %                                     `\  }
 % % %                                       { }
-% % %   File created by A. BAELDE
-% % %   Creation Date : 13/01/2018
+% % %   File created by Takfarinas MEDANI
+% % %   Creation Date : 10/10/2016
 % % %   Updates and contributors :
-
+% % %   29/01/2018, T. MEDANI :
+% % %
+% % %
 % % %   Citation: [creator and contributor names], comprehensive BCI
 % % %             toolbox, available online 2016.
-% % %           
-% % %   Contact info : francois.vialatte@espci.fr          
+% % %
+% % %   Contact info : francois.vialatte@espci.fr
 % % %   Copyright of the contributors, 2016
 % % %   Creative Commons License, CC-BY-NC-SA
 % % %----------------------------------------------------------------------

@@ -26,9 +26,7 @@ function handles = Feature_ranking_gui(handles, hObject)
 %   Please refer to copyright info in the file footer.
 %%%------------------------------------------------------------------------
 % Rank features
-handles.feature_result = Sigma_feature_ranking3(handles.init_parameter ,...
-                        handles.init_method , handles.feature_result);
-%handles.init_parameter.nb_features = handles.feature_result.nb_features;
+handles.feature_result = Sigma_feature_ranking3(handles.init_parameter , handles.init_method , handles.feature_result);
 
 % Set the computed structure
 handles.computed.init_parameter = handles.init_parameter;

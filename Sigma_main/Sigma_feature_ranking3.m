@@ -39,9 +39,6 @@ if (nVarargs == 3)
     if isfield(feature_result,'o_features_matrix_normalize')
         % normalized with the Zscore
         o_features_matrix = feature_result.o_features_matrix_normalize;
-        if init_parameter.compute_cross_term_feature==1
-            o_features_matrix = feature_result.o_features_matrix_with_cross_term;             
-        end
     else
         % not normalized
         o_features_matrix = feature_result.o_features_matrix;
@@ -90,7 +87,7 @@ end
 ranking_method = init_parameter.ranking_method;
 
 % Identification of the feaures
-%o_features_matrix_id = feature_result.o_features_matrix_id;
+o_features_matrix_id = feature_result.o_features_matrix_id;
 
 
 %%    displaying Information on the screen
@@ -141,10 +138,6 @@ end
 [idx_best_features,performance_ranking] = Sigma_ranking_methods...
     (init_parameter,o_features_matrix,label,nb_features,ranking_method);
 
-% pseudo update of the number of features 
-% init_parameter.nb_features = length(idx_best_features);
-feature_result.nb_features = length(idx_best_features);
-
 if isempty(idx_best_features)
     warning('-----------------------------------------------------------' )
     disp('-----------------------Warning-------------------------------' )
@@ -160,22 +153,6 @@ else
         init_method,feature_result,idx_best_features);
     
     
-    % get the best index if cross terms are here
-    % Takfarinas Modification 17/12/2018
-        if isfield(feature_result,'feature_matrix_cross_term_id')
-            %x = feature_result.best_organisation(:,1);
-            x = best_organisation(:,1);
-            A = cell2mat(x);
-           
-             feature_result.idx_best_features_cross_terms = ...
-                                          idx_best_features;    
-            idx_best_features = A;            
-                  
-            feature_result.idx_best_features = A;
-            %handles.feature_result.idx_best_features = A;
-        end
-    
-    
     % Creat the matrix with only the best features
     if (nVarargs <= 3)
         o_best_features_matrix = o_features_matrix(idx_best_features,:);
@@ -184,10 +161,6 @@ else
         feature_result.performance_ranking = performance_ranking;
         feature_result.best_organisation = best_organisation;
         feature_result.best_organisation_infos = best_organisation_infos;
-        
-        %% check the normal distribution of the data 
-        feature_result = Sigma_check_normal_distribution(feature_result);
-        
     end
     
     if (nVarargs > 3)
@@ -222,7 +195,6 @@ else
         disp('************ End of OFR Ranking Function **************')
     end
 end
-
 end
 %%
 % % %----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 function selected_model=Sigma_get_best_model...
-    (init_parameter,feature_result,performance_result)
+                         (init_parameter,feature_result,performance_result)
 %%%------------------------------------------------------------------------
 % function selected_model=Sigma_get_best_model(init_parameter,
 %                                       feature_result,performance_result)
@@ -34,81 +34,46 @@ selection_method = 'ofr';
 if strcmp(selection_method,'ofr')
     % Get the number of the features with the best AUC
     % Max AUC : todo select best model accordin to the others critéria
-    %% old version
-    %     [auc_model, index_max_auc] = max(performance_result.performance(:,8));
-    %     selected_model.auc_model = auc_model;
-    % The number of the features giving the best AUC
-    %% Modification by Nessim
-    %the number of feature is the one chosen previously
-    
-    %check if the number of feature was selected manually
-    if isfield(feature_result,'nb_of_feature_selected')
-        index_max_auc = feature_result.nb_of_feature_selected;
-        auc_model = performance_result.performance(index_max_auc,8);
-    else
-        %default value
-        [auc_model, index_max_auc] = max(performance_result.performance(:,8));
-    end
-    
-    %check if the threshold was selected manually
-    if isfield(feature_result,'threshold_selected')
-        selected_model.threshold = feature_result.threshold_selected
-    else
-        %default value
-        selected_model.threshold = 0.5;
-    end
-    
-    %get the score and compute the prediction according to the threshold
-    scores_matrix = cell2mat(performance_result.scores(2));
-    selected_model_scores = scores_matrix(index_max_auc,:);
-    performance_result.prediction(index_max_auc,:) = Predict_from_scores(selected_model_scores,selected_model.threshold);
-    performance_result.performance(index_max_auc,:) = Sigma_compute_performance(feature_result.label,performance_result.prediction(index_max_auc,:),selected_model_scores);
+    [auc_model, index_max_auc] = max(performance_result.performance(:,8));
     selected_model.auc_model = auc_model;
-    
-    %%
     % The number of the features giving the best AUC
     if isfield(feature_result,'feature_matrix_cross_term_id')
         nb_feat_model = index_max_auc+1;
     else
-        nb_feat_model = index_max_auc;
+         nb_feat_model = index_max_auc;
     end
     selected_model.nb_feat_model = nb_feat_model;
     
     % Get the ranking of these features with the OFR
-    best_feat_ofr_model = feature_result.idx_best_features...
-        (1:nb_feat_model);
+    best_feat_ofr_model = feature_result.idx_best_features...   
+                                                         (1:nb_feat_model);
     selected_model.best_feat_ofr_model = best_feat_ofr_model;
     % Get the matrix of the best features
     % not normalized
-    if init_parameter.compute_cross_term_feature==1
-        temp = feature_result.feature_matrix_cross_term_id(best_feat_ofr_model,:);
-        best_feat_ofr_model  = unique(temp(:));
-        selected_model.best_feat_ofr_model = best_feat_ofr_model;
-    end
     best_feature_training_ofr = feature_result.o_features_matrix...
-        (best_feat_ofr_model,:);
+                                                   (best_feat_ofr_model,:);
     selected_model.best_feature_training_ofr = best_feature_training_ofr;
     % normalized
     best_feature_training_normalize_ofr = ...
-        feature_result.o_features_matrix_normalize(best_feat_ofr_model,:);
+         feature_result.o_features_matrix_normalize(best_feat_ofr_model,:);
     selected_model.best_feature_training_normalize_ofr = ...
-        best_feature_training_normalize_ofr;
+                                       best_feature_training_normalize_ofr;
     
-    best_feature_std_ofr_model = feature_result.o_features_matrix_std...
-        (best_feat_ofr_model);
+    best_feature_std_ofr_model = feature_result.o_features_matrix_std...    
+                                                     (best_feat_ofr_model);
     best_feature_mean_ofr_model = feature_result.o_features_matrix_mean...
-        (best_feat_ofr_model);
+                                                     (best_feat_ofr_model);
     selected_model.best_feature_std_ofr_model = ...
-        best_feature_std_ofr_model;
+                                                best_feature_std_ofr_model;
     selected_model.best_feature_mean_ofr_model = ...
-        best_feature_mean_ofr_model;
+                                               best_feature_mean_ofr_model;    
     
-    best_organisation_ofr_model = feature_result.best_organisation...
-        (1:nb_feat_model,:);
+    best_organisation_ofr_model = feature_result.best_organisation...    
+                                                       (1:nb_feat_model,:);
     selected_model.best_organisation_ofr_model = ...
-        best_organisation_ofr_model;
+                                               best_organisation_ofr_model;
     selected_model.best_organisation_info_model = ...
-        feature_result.best_organisation_infos;
+                                    feature_result.best_organisation_infos;
 end
 
 %% The bagging model
@@ -117,7 +82,7 @@ if strcmp(selection_method,'bag')
     % TODO : exeption in the case of the bagging in différente to the ofr
     %%% Get the ranking of these features with the OFR + bagging
     best_feat_bag_model = ...
-        Sigma_election_best_index(performance_result.index_selected);
+              Sigma_election_best_index(performance_result.index_selected);
     % romove the duplicated and keep the order
     [~,index]  =  unique(best_feat_bag_model,'first');
     best_feat_bag_model = best_feat_bag_model(sort(index));
@@ -126,23 +91,23 @@ if strcmp(selection_method,'bag')
     
     % keep the feature matrix% not normalized
     best_feature_training_bag = feature_result.o_features_matrix...
-        (best_feat_bag_model,:);
+                                                   (best_feat_bag_model,:);
     selected_model.best_feature_training_bag = best_feature_training_bag;
     % normalized
     best_feature_training_normalize_bag = ...
-        feature_result.o_features_matrix_normalize(best_feat_bag_model,:);
+         feature_result.o_features_matrix_normalize(best_feat_bag_model,:);
     selected_model.best_feature_training_normalize_bag = ...
-        best_feature_training_normalize_bag;
+                                       best_feature_training_normalize_bag;
     
     % Get the std and the mean for the bagging
     best_feature_std_bag_model = ...
-        feature_result.o_features_matrix_std(best_feat_bag_model);
+                 feature_result.o_features_matrix_std(best_feat_bag_model);
     best_feature_mean_bag_model = ...
-        feature_result.o_features_matrix_mean(best_feat_bag_model) ;
+               feature_result.o_features_matrix_mean(best_feat_bag_model) ;
     selected_model.best_feature_std_bag_model = ...
-        best_feature_std_bag_model;
+                                                best_feature_std_bag_model;
     selected_model.best_feature_mean_bag_model = ...
-        best_feature_mean_bag_model;
+                                               best_feature_mean_bag_model;
     
     %%% Identification of the features  ofr + bagging
     init_parameter.sigma_show_comment = ~init_parameter.sigma_show_comment;
@@ -161,19 +126,19 @@ selected_model.performance_model_infos = performance_model_infos;
 % targets = Sigma_adapt_label(feature_result.label);
 %%%Confusion Matrix  transform the labes
 [confusion_matrix , classes]  =  confusionmat(feature_result.label ,...
-    performance_result.prediction(index_max_auc , :));
+                        performance_result.prediction(index_max_auc , :));
 
 selected_model.confusion_matrix = confusion_matrix;
 selected_model.classes = classes;
 selected_model.origine_label = feature_result.label;
 selected_model.predicted_label = ...
-    performance_result.prediction(index_max_auc , :);
+                          performance_result.prediction(index_max_auc , :);
 % This selection is not correct ,  it select the last model
 % Compute the new model using all the data:
 %% TODO : add here the baggig model on the selected features
 o_best_features_matrix = feature_result.o_best_features_matrix;
 o_best_features_matrix_selected = ...
-    o_best_features_matrix(1:nb_feat_model,:);
+                                 o_best_features_matrix(1:nb_feat_model,:);
 label = feature_result.label;
 
 classificationMethod = init_parameter.classification_method;
@@ -184,10 +149,10 @@ end
 
 if(classificationMethod  ==  'QDA')
     classObj  =  fitcdiscr(o_best_features_matrix_selected' ,...
-        label' , 'DiscrimType' , 'diagLinear');
+                                    label' , 'DiscrimType' , 'diagLinear');
 end
 
-if(classificationMethod  ==  'SVM')
+if(classificationMethod  ==  'SVM')   
     %You should get all this from the gui
     ic_data  =  o_best_features_matrix_selected';
     ic_label  = label';
@@ -205,9 +170,9 @@ if(classificationMethod  ==  'SVM')
     c_tolkkt  =  5e-2; % KKT tolerance
     
     l_constraint = performance_result.best_hyperparameter...
-        {nb_feat_model}.constraint;
+                                                {nb_feat_model}.constraint;
     l_condition = performance_result.best_hyperparameter...
-        {nb_feat_model}.condition;
+                                                 {nb_feat_model}.condition;
     c_kernel0  =  c_kernel{1};
     
     disp(['You have selected the "' c_kernel0 '" kernel for your SVM'])
@@ -245,24 +210,16 @@ end
 selected_model.classObj = classObj;
 % MSG
 msg1 = ['The best model is selected according to the best AUC  =  '...
-    num2str(100*selected_model.auc_model) '%'];
+                                num2str(100*selected_model.auc_model) '%'];
 % if isfield(feature_result,'feature_matrix_cross_term_id')
 %     msg2 = ['The best model is obtained using the ' ...
 %             num2str(selected_model.nb_feat_model) ...
 %                 ' best ranked features (cross terms)'];
 % else
-msg2 = ['The best model is obtained using the ' ...
-    num2str(selected_model.nb_feat_model) ' best ranked features'];
+    msg2 = ['The best model is obtained using the ' ...
+            num2str(selected_model.nb_feat_model) ' best ranked features'];
 % end
-%msgbox({msg1;msg2}  , 'SIGMA : select best model')
-%% Modification by Nessim 
-% The message display the select number of feature and threshold
-msg1 = ['The AUC of the selected model is '...
-                                num2str(100*selected_model.auc_model) '%'];
-msg2 = ['It is obtained using the ' ...
-            num2str(selected_model.nb_feat_model) ' best ranked features'];                            
-msg3= ['The threshold is set at ' num2str(selected_model.threshold) '.'];
-msgbox({msg1;msg2;msg3}  , 'SIGMA : select best model')
+msgbox({msg1;msg2}  , 'SIGMA : select best model')
 
 end
 

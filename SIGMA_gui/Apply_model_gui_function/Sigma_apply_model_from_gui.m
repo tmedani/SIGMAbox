@@ -1,7 +1,8 @@
 function handles=Sigma_apply_model_from_gui(handles)
 %%%------------------------------------------------------------------------
-% handles=Sigma_apply_model_from_gui%
-% Fuction task:
+%  init_parameter = Sigma_parameter_initialisation(varargin)
+%
+% Scripts task:
 % last update 07/12/2017 17h30
 % This function is the last part of the SIGMA toolbox, it compute the
 % performance of the selected model for new data or classify just new data.
@@ -408,11 +409,7 @@ for l_subject = 1:nb_subject
         
         %% Section 3 : summarize about the used method
         method_used = method_number(l_method);
-        if method_used == 42
-            band_used = 2;
-        else
         band_used = freq_band_number(l_method);
-        end
         % save the informations of the extracted features
         used_parameters = [used_parameters;{method_used}  ...
             {used_channels} {band_used} {index_to_select-1}];
@@ -448,8 +445,8 @@ for l_subject = 1:nb_subject
         disp(['  Power Type  :  ' temp1{4}...
             ' ; (N° ' num2str(index_to_select-1) ')']);
         
-        %used_parameters_name = {used_parameters_name;temp1};
-        used_parameters_name{l_method} = temp1;
+        used_parameters_name = [used_parameters_name;temp1];
+        
         % initialisation for the next feature
         power_feature = [];
         s_EEG = original_data;
@@ -602,14 +599,6 @@ end
 % Prediction for the new subjects
 classObj = selected_model.classObj;
 [YP, sc] = predict(classObj,computed_feature_new_data');
-
-%% modification by Nessim 
-%change the prediction using the selected threshold
-threshold = selected_model.threshold;
-score = sc(:,2);
-YP = Predict_from_scores(score,threshold);
-
-%%
 
 if size(YP,1)~= sum(epochs)
     uiwait(msgbox(['There is an error in the prediction computation,'...

@@ -61,6 +61,7 @@ elseif ischar(varargin{1})
 elseif isstruct(varargin{1})
     text_to_display = (varargin{1}.text_to_display);
     name_of_gui = (varargin{1}.name_of_gui);
+
     handles.figure1.Name = name_of_gui;
 end
 handles.DC_help_classification_onebyone.String = text_to_display;

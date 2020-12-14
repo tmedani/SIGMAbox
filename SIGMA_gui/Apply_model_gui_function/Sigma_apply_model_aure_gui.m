@@ -622,30 +622,13 @@ if strcmp(apply_model_outputs.test_or_application,'Application')
     
     figure
     grid on; grid minor; hold on
-    [Ya,Xa,~,auc_temp,OPTROCPT] = perfcurve(feature_result.label,scores(index,:),1);
+    [Xa,Ya,~,auc_temp,OPTROCPT] = perfcurve(feature_result.label,scores(index,:),1);
     if auc_temp==max_auc
         display('The ROC is correct Greaaaat :) ')
     end
     %plot(Xa,Ya,'r*',0:1,0:1,'g',1:-0.1:0,0:0.1:1,'y',OPTROCPT(1),OPTROCPT(2),'ks','markersize',15)
-  
-    
-    %% modification by Nessim 
-    %the operating point was not the same on the ROC curve and on the 
-    %confusion matrix
-    %IMPORTANT: Do not calculate the operating point with the function
-    %perfcurve (it's not the OP used in model selection)
-    
-    %compute the ROC curve
-    [Ya,Xa,~,~] = ROC_from_scores(feature_result.label,scores(index,:),1000)
-    
-    %get the operating point from the performance of the model
-    sensitivity = apply_model_outputs.test_results.performance(2);
-    specificity = apply_model_outputs.test_results.performance(3);
-    OPTROCPT = [1-specificity sensitivity];
-    
-    %%
     plot(Xa,Ya,'r*','markersize',15);
-    hold on; 
+    hold on;
     plot(OPTROCPT(1),OPTROCPT(2),'ko','markersize',15);
     hold on;
     plot(0:1,0:1,'g');
@@ -675,27 +658,8 @@ elseif strcmp(apply_model_outputs.test_or_application,'test')
     scores=apply_model_outputs.predicted_scores(:,1);
     [Xa,Ya,~,AUC,OPTROCPT] = perfcurve(label,scores,-1);
     figure;
-    
-    %% modification by Nessim; 
-    %the operating point was not the same on the ROC %curve and on the 
-    %confusion matrix
-    %IMPORTANT: Do not calculate the operating point with the function
-    %perfcurve (it's not the OP used in model selection)
-    
-    %get the predicted scores
-    scores=apply_model_outputs.predicted_scores(:,2);
-    
-    %plot the ROC curve
-    [Ya,Xa,~,~] = ROC_from_scores(label',scores',1000);
-    
-    %get the operating point from the performance of the model    
-    sensitivity = apply_model_outputs.test_results.performance(2);
-    specificity = apply_model_outputs.test_results.performance(3);
-    OPTROCPT = [1-specificity sensitivity];
-    %%
-    
     plot(Xa,Ya,'r*','markersize',15);
-    hold on; 
+    hold on;
     plot(OPTROCPT(1),OPTROCPT(2),'ko','markersize',15);
     hold on;
     plot(0:1,0:1,'g');

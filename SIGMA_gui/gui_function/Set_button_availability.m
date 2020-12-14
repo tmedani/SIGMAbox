@@ -81,9 +81,7 @@ end
 % only one method selected and at least one method is prsent in the list
 if( (length(get(handles.FEM_selected, 'Value')) == 1) && (length(handles.init_parameter.method) > 0.5))
     %Check method editability
-    %if(isempty(handles.selected_method) < 0.5)  %if some methods are selected
-    if (isempty(handles.init_parameter.method) < 0.5) % modification Takfarinas 
-        handles.selected_method = handles.init_parameter.method;
+    if(isempty(handles.selected_method) < 0.5)  %if some methods are selected
         %Find the method number
         method_number = get(handles.FEM_selected, 'Value');
         init_met_method_number = handles.selected_method(method_number);

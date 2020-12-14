@@ -808,9 +808,9 @@ os_init_method(method_number).method_color_html = method_colored;
 
 %% 41  == > Method
 method_number = method_number+1;
-os_init_method(method_number).method_name = 'spect_pic_alpha';
-os_init_method(method_number).method_out = 'o_spect_pic_alpha';
-os_init_method(method_number).fc_method_name = 'Spectral_pic_alpha';
+os_init_method(method_number).method_name = 'spect_not_implemented';
+os_init_method(method_number).method_out = 'spect_not_implemented';
+os_init_method(method_number).fc_method_name = 'spect_not_implemented';
 os_init_method(method_number).method_number = method_number;
 os_init_method(method_number).method_type = 'Spect';
 Index = find(strcmp(method_types,os_init_method(method_number).method_type));
@@ -823,9 +823,9 @@ os_init_method(method_number).method_color_html = method_colored;
 
 %% 42  == > Method
 method_number = method_number+1;
-os_init_method(method_number).method_name = 'spect_ratio_theta_beta';
-os_init_method(method_number).method_out = 'o_ratio_theta_beta';
-os_init_method(method_number).fc_method_name = 'Spectral_ratio_theta_beta';
+os_init_method(method_number).method_name = 'spect_not_implemented';
+os_init_method(method_number).method_out = 'spect_not_implemented';
+os_init_method(method_number).fc_method_name = 'spect_not_implemented';
 os_init_method(method_number).method_number = method_number;
 os_init_method(method_number).method_type = 'Spect';
 Index = find(strcmp(method_types,os_init_method(method_number).method_type));
@@ -1159,20 +1159,7 @@ method_colored = ['<html><FONT color = ' ...
    os_init_method(method_number).method_name...
     '</Font></html>'];
 os_init_method(method_number).method_color_html = method_colored;
-% 62  == > Method 62 : Synchro_phase_index_value
-method_number = method_number+1;;
-os_init_method(method_number).method_name = 'synchro_phase_index2';
-os_init_method(method_number).method_out = 'o_synchro_phase_index2';
-os_init_method(method_number).fc_method_name = 'Synchro_phase_index2_value';
-os_init_method(method_number).method_number = method_number;
-os_init_method(method_number).method_type = 'Synchro';
-Index = find(strcmp(method_types,os_init_method(method_number).method_type));
-os_init_method(method_number).method_color = method_colors{Index};
-method_colored = ['<html><FONT color = ' ...
-   os_init_method(method_number).method_color '>' ...
-   os_init_method(method_number).method_name...
-    '</Font></html>'];
-os_init_method(method_number).method_color_html = method_colored;
+
 %
 for ind = method_number:100
     method_number = method_number+1;

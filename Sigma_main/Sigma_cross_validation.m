@@ -1,5 +1,5 @@
-function [performance_result, feature_result]=Sigma_cross_validation...
-    (feature_result,init_parameter,init_method)
+function [performance_result]=Sigma_cross_validation...
+                                (feature_result,init_parameter,init_method)
 %%%------------------------------------------------------------------------
 %  [performance_result]=Sigma_cross_validation
 %                              (feature_result,init_parameter,init_method)
@@ -65,79 +65,11 @@ function [performance_result, feature_result]=Sigma_cross_validation...
 %% SECTION 1 :  Initialisation
 cross_validation_method=init_parameter.cross_validation_method;
 classification_method=init_parameter.classification_method;
-% remise de la matrice initiale
-feature_result.o_features_matrix = feature_result.o_features_matrix_normalize;
+
 %% SECTION 2 :   Computing the cross validation & classification
 
 if ~strcmp(classification_method,'SVM')
-    
-    % Message pour tester la distribution des feature
-    if sum(feature_result.is_normal_distribution == 0) ~= 0
-        promptMessage = sprintf(['There is at least one feature with no normal distribution,'...
-            '\n SVM is adviced for this analysis,'...
-            '\n Do you want to Continue processing with the selected method,'...
-            '\n or Cancel to abort processing and change parameters?']);
-        button = questdlg(promptMessage, 'SIGMA Warning', 'Continue',...
-            'Cancel', 'Continue');
-        if strcmpi(button, 'Cancel')
-            disp('aborted')
-            performance_result = [];
-            return; % Or break or continue
-        end
-        disp('continue')        
-    end
-    
-    % remove the non normal distribution feature
-    if sum(feature_result.is_normal_distribution == 0) ~= 0
-        index_not_normal = find(feature_result.is_normal_distribution == 0);        
-               
-        promptMessage = sprintf(['Do you want to remove the feature with no normal distribution']);
-            
-        button = questdlg(promptMessage, 'SIGMA Warning', 'Yes',...
-            'No','Cancel','Yes');
-        switch button
-            case 'Yes'
-                disp('Removing the no normal distribution ... ')
-                % Remove the non normal feature from the best feature matrix
-                % keep original version
-                feature_result.before_removing_no_normal_feature.o_best_features_matrix  = feature_result.o_best_features_matrix; 
-                feature_result.before_removing_no_normal_feature.idx_best_features  = feature_result.idx_best_features;
-                feature_result.before_removing_no_normal_feature.nb_features  = feature_result.nb_features; 
-                feature_result.before_removing_no_normal_feature.o_best_features_matrix  = feature_result.o_best_features_matrix; 
-                feature_result.before_removing_no_normal_feature.channel_method  = feature_result.channel_method; 
-                feature_result.before_removing_no_normal_feature.performance_ranking  = feature_result.performance_ranking; 
-                feature_result.before_removing_no_normal_feature.best_organisation  = feature_result.best_organisation; 
-                feature_result.before_removing_no_normal_feature.best_organisation  = feature_result.best_organisation; 
-                feature_result.before_removing_no_normal_feature.is_normal_distribution = feature_result.is_normal_distribution;
-                % new version 
-                feature_result.o_best_features_matrix(index_not_normal,:) = [];
-                feature_result.nb_features = size(feature_result.o_best_features_matrix,1);
-                feature_result.idx_best_features(index_not_normal) = [];
-                %feature_result.channel_method(index_not_normal,:) = nan;
-                feature_result.performance_ranking(index_not_normal) = [];
-                feature_result.best_organisation(index_not_normal,:) = [];
-                feature_result.is_normal_distribution(index_not_normal) = [];
-                %index_not_normal
-                
-                promptMessage = sprintf([num2str(length(index_not_normal))...
-                    ' feature(s) with no normal distributioon are removed \n'...
-                    'The number of selected feature(s) is updated to ' ...
-                    num2str(feature_result.nb_features)]);
-                uiwait(msgbox(promptMessage));
-                
-            case 'No'
-                disp('All the feature will be included')
-            case 'Cancel'
-                performance_result = [];
-                return; % Or break or continue
-        end
-        disp('continue')        
-    end
-    
-    
-    
     %% Compute the cross validation accordinf to the chosen method
-           
     %%% LOEO
     if strcmp(cross_validation_method,'LOEO')
         disp(['You have selected the :  ' classification_method...
@@ -154,8 +86,8 @@ if ~strcmp(classification_method,'SVM')
                 Sigma_cross_validation_loso(feature_result,init_parameter);
         else
             msgbox(['LOSO is impossible with one subject,',...
-                'please put more subject or change CV method'],...
-                'SIGMA error','error');
+                        'please put more subject or change CV method'],...
+                                                    'SIGMA error','error');
             performance_result=[];
             return
         end
@@ -200,7 +132,7 @@ if strcmp(classification_method,'SVM')
         if ~(init_parameter.nb_subject<2)
             if strcmp(cross_validation_method,'LOSO')
                 disp(['You have selected the :  ' classification_method...
-                    ' & ' cross_validation_method ' ...']);
+                    ' & ' cross_validation_method ' ...']);                
                 result = Call_sigma_svm_loso_finale...
                     (feature_result,init_parameter);
                 scores = result.score;
@@ -219,22 +151,15 @@ if strcmp(classification_method,'SVM')
     
 end
 
-
-%% Change the prediction according to the new thershold
-
-
-
-
-
 %% SECTION 3 :   Compute the performance of the classification
-disp('Compute the performance of the model ...')
+disp('Comput the performance of the model ...')
 scores_pc = scores{2}; % score of the positive class
 if strcmp(cross_validation_method,'LxSO')
     [performance,performance_infos]=Sigma_compute_performance...
-        (labels_lxso,prediction,scores_pc);
+                                    (labels_lxso,prediction,scores_pc);
 else
     [performance,performance_infos]=Sigma_compute_performance...
-        (feature_result.label,prediction,scores_pc);
+                            (feature_result.label,prediction,scores_pc);
 end
 
 %%% get the best voted ranking for the bagging
@@ -248,13 +173,13 @@ if strcmp(selection_method,'ofr')
     disp('OFR on all data')
     [best_organisation, best_organisation_infos]=...
         Sigma_feature_identification(init_parameter,init_method,...
-        feature_result,best_ofr_index);
+                                            feature_result,best_ofr_index);
 end
 if strcmp(selection_method,'bag')
     disp('BAG : best voted index')
     [best_organisation, best_organisation_infos]=...
         Sigma_feature_identification(init_parameter,init_method,...
-        feature_result,best_voted_index);
+                                          feature_result,best_voted_index);
 end
 
 %% Check the Index of the bagging and not bagging :
@@ -265,7 +190,7 @@ end
 %% SECTION 4 :  Outpus
 % Output
 performance_result.classification_method=...
-    init_parameter.classification_method;
+                                      init_parameter.classification_method;
 performance_result.cross_validation_method=cross_validation_method;
 performance_result.scores=scores;
 performance_result.prediction=prediction;

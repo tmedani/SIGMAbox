@@ -22,7 +22,7 @@ function varargout = Sigma_main_gui(varargin)
 
 % Edit the above text to modify the response to help sigma_main_gui
 
-% Last Modified by GUIDE v2.5 24-Oct-2018 18:57:25
+% Last Modified by GUIDE v2.5 03-May-2018 19:23:37
 
 % Begin initialization code - Do not EDIT
 gui_Singleton = 1;
@@ -88,7 +88,7 @@ handles = Init_GUI(handles, hObject);
 % generate GUI according to parameters
 handles = Init_parameter2gui(handles, hObject);
 
-%disp(handles.init_parameter.adv_ranking_method)
+disp(handles.init_parameter.adv_ranking_method)
 
 % [handles.init_parameter, session_state] = Sigma_create_session(handles.init_parameter);
 % disp(session_state)
@@ -98,12 +98,7 @@ if ~isempty(varargin)
     handles.location=varargin{1};
 end
 
-%% Load from start 
-if isfield(handles,'load_session_from_start')
-    if handles.load_session_from_start == 1
-        Sigma_load_session_from_gui(hObject, [], handles)
-    end
-end
+% disp(handles.init_parameter.adv_ranking_method)
 
 guidata(hObject, handles);
 
@@ -432,7 +427,7 @@ guidata(hObject, handles);
 function FEM_pb_load_feature_Callback(hObject, eventdata, handles)
 % display('This function will be added soon!!')
 % msgbox('This method is not already implemented for this version of SIGMA','SIGMA Warning !','warning');
-handles = Load_features(handles, hObject);
+    handles = Load_features(handles, hObject);
 
 
 
@@ -473,6 +468,7 @@ end
 % --- Executes on button press in FR_pb_compute_FR.
 function FR_pb_compute_FR_Callback(hObject, eventdata, handles)
 % Compute the feature ranking
+
 wait_title = 'Feature Ranking ';
 wait_message = 'Selection in process...';
 h_wait = Sigma_waiting(wait_title, wait_message);
@@ -579,12 +575,12 @@ end
 guidata(hObject, handles);
 
 
-% --- Executes on button press in DC_rb_LDA.
-function DC_rb_LDA_Callback(hObject, eventdata, handles)
 % --- Executes on button press in DC_rb_QDA.
 function DC_rb_QDA_Callback(hObject, eventdata, handles)
+
 % --- Executes on button press in DC_rb_SVM.
 function DC_rb_SVM_Callback(hObject, eventdata, handles)
+%warning('This method is not already adapted for this version of SIGMA')
 %
 % %warndlg('This method is not already adapted for this version of SIGMA, please change','SIGMA Error','error');
 % message=sprintf('This method is not already adapted for this version of SIGMA, please change \n .... But you can do it \n Hint : export the results to matlab and use the doc of "svmclassify"');
@@ -636,10 +632,6 @@ Sigma_help_adaptive_gui(data)
 function DC_pb_compute_Callback(hObject, eventdata, handles)
 % compute the classification
 handles = Compute_classification(handles, hObject);
-% % 
-%  Set_button_availability(handles, hObject);
-%  handles = Update_feature_ranking(handles, hObject);
-
 guidata(hObject, handles);
 
 % --- Executes on button press in DC_pb_display.
@@ -655,17 +647,6 @@ init_parameter = handles.init_parameter;
 feature_result = handles.feature_result;
 init_method = handles.init_method;
 performance_result = handles.performance_result;
-%% Modification by Nessim
-%check if the number of feature was selected manually
-if isappdata(handles.learning_panel,'nb_of_feature_selected')
-    feature_result.nb_of_feature_selected = getappdata(handles.learning_panel,'nb_of_feature_selected')
-end
-
-%check if the threshold was selected manually
-if isappdata(handles.learning_panel,'threshold_selected')
-    feature_result.threshold_selected = getappdata(handles.learning_panel,'threshold_selected')
-end
-%%
 % use the best model selection function
 handles.selected_model = Sigma_get_best_model(init_parameter,feature_result,performance_result);
 %selected_model
@@ -839,8 +820,34 @@ guidata(hObject, handles);
 
 % --------------------------------------------------------------------
 function menu_files_load_session_Callback(hObject, eventdata, handles)
-Sigma_load_session_from_gui(hObject, eventdata, handles)
-
+[FileName,PathName] = uigetfile();
+if( FileName == 0)
+    disp('load cancelled')
+    handles.sigma_load_session = 0;
+    return
+else
+    opening_session_name = [ PathName, FileName ];
+    handles = Sigma_load_sessionGUI( opening_session_name, handles, hObject );
+    
+    % Update the gui according to init_paramter and other sata structures
+    handles = Init_parameter2gui(handles, hObject);
+    
+    set(handles.FEM_st_nb_features_computed, 'String', ...
+        size(handles.feature_result.o_features_matrix_normalize,1)),
+    set(handles.FEM_st_nb_epoch_computed, 'String', ...
+        size(handles.feature_result.o_features_matrix_normalize,2));
+    set(handles.FEM_st_linear_separability, 'String', ...
+        handles.feature_result.linear_Separability);
+    set(handles.DP_suject_text,'String',length(handles.DP_list_subject_selected.String));
+    set(handles.DL_suject_text,'String',length((handles.init_parameter.subject_index)) - length(handles.DP_list_subject_selected.String));
+    
+    set( handles.FEM_nb_selected_methode, 'String', length(handles.selected_method ))
+    set( handles.FEM_nb_available_methode, 'String', length(handles.unselected_method))
+    guidata(hObject, handles);
+    
+    h=msgbox('   Your session is correctely loaded   ','SIGMA Loadind session');
+    uiwait(h)
+end
 
 function menu_files_save_session_Callback(hObject, eventdata, handles)
 % add SAVE GUI when function is modified
@@ -1011,6 +1018,9 @@ function pushbutton59_Callback(hObject, eventdata, handles)
 % --- Executes on button press in pushbutton60.
 function pushbutton60_Callback(hObject, eventdata, handles)
 
+% --- Executes on button press in pushbutton65.
+function pushbutton65_Callback(hObject, eventdata, handles)
+
 % --- Executes on button press in pushbutton67.
 function pushbutton67_Callback(hObject, eventdata, handles)
 
@@ -1025,19 +1035,6 @@ name_of_gui = 'SIGMA Help : Data Compatibility';
 data.text_to_display = text_to_display;
 data.name_of_gui = name_of_gui;
 Sigma_help_adaptive_gui(data)
-
-
-% --- Executes on button press in DP_help_button.
-function DP_help_button_Callback(hObject, eventdata, handles)
-text = fileread('help_frequency_band.txt') ;
-text_to_display = text;
-name_of_gui = 'SIGMA Help : Frequency band';
-data.text_to_display = text_to_display;
-data.name_of_gui = name_of_gui;
-Sigma_help_adaptive_gui(data)
-
-
-
 % --- Executes on button press in pushbutton62.
 function pushbutton62_Callback(hObject, eventdata, handles)
 
@@ -1131,11 +1128,9 @@ subject_index=handles.init_parameter.subject_index;
 nb_subject=length(subject_index);
 data=[];subject_rank=[];
 for ind = 1:nb_subject
-    if isfield(handles,'sigma_load_session')
-        if handles.sigma_load_session == 1
-            msgbox('These subject(s) are not available on this computer')
-            return
-        end
+    if handles.sigma_load_session == 1
+        msgbox('These subject(s) are not available on this computer')
+        return
     end
     load([handles.init_parameter.data_location 'subject_' num2str(subject_index(ind))])
     % get the information
@@ -1306,12 +1301,7 @@ function what_data_wisualisation_Callback(hObject, eventdata, handles)
 % hObject    handle to what_data_wisualisation (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-text = fileread('what_is_this_data_visualisation.txt') ;
-text_to_display = text;
-name_of_gui = 'SIGMA What is this : Data Visualisation';
-data.text_to_display = text_to_display;
-data.name_of_gui = name_of_gui;
-Sigma_help_adaptive_gui(data)
+
 
 % --------------------------------------------------------------------
 function DL_data_visualisation_Callback(hObject, eventdata, handles)
@@ -1401,13 +1391,7 @@ switch choice
     case 'OK'
         disp('Goood')
     case 'Open folder'
-        if ispc
-            winopen(init_parameter.full_session_name);
-        end
-        if ismac
-            macopen(init_parameter.full_session_name);
-        end
-        
+        winopen(init_parameter.full_session_name);
 end
 
 % --------------------------------------------------------------------
@@ -1431,12 +1415,7 @@ function DL_show_subject_explorer_Callback(hObject, eventdata, handles)
 % hObject    handle to DL_show_subject_explorer (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if ispc
-    winopen(handles.init_parameter.data_location);
-end
-if ismac
-    macopen(handles.init_parameter.data_location);
-end
+winopen(handles.init_parameter.data_location);
 
 function DL_data_path_Callback(hObject, eventdata, handles)
 %**********////!!!   Do not remove   !!!\\\\**************
@@ -1445,13 +1424,7 @@ function DL_open_data_folder_Callback(hObject, eventdata, handles)
 % hObject    handle to DL_open_data_folder (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-%winopen(handles.init_parameter.data_location);
-if ispc
-    winopen(handles.init_parameter.data_location);
-end
-if ismac
-    macopen(handles.init_parameter.data_location);
-end
+winopen(handles.init_parameter.data_location);
 
 
 % --------------------------------------------------------------------
@@ -1579,7 +1552,7 @@ function FEM_export_feature_to_matlab_Callback(hObject, eventdata, handles)
 assignin('base', 'feature_result', handles.feature_result )
 assignin('base','feature_matrix', handles.feature_result.o_features_matrix)
 
-uiwait(msgbox('The Feature results are exported to Matlab','SIGMA message'))
+uiwiat(msgbox('The Feature results are exported to Matlab','SIGMA message'))
 guidata(hObject, handles);
 
 
@@ -1592,31 +1565,11 @@ function FEM_add_cross_term_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of FEM_add_cross_term
 % Wainting bar
 
-if strcmp(hObject.Tag,'add_cross_term_menubar')
-    hObject = handles.add_cross_term_menubar;
-    cross_term_checked = get(hObject,'Checked');
-    if strcmp(cross_term_checked,'on')
-        add_cross_term = 1;
-    elseif strcmp(cross_term_checked,'off')
-        add_cross_term = 0;
-    end
-end
 
-if strcmp(hObject.Tag,'FEM_add_cross_term')
-    hObject = handles.FEM_add_cross_term;
-    add_cross_term = get(hObject,'Value');
-    if add_cross_term == 1
-        cross_term_checked = 'on';
-    elseif add_cross_term == 0
-        cross_term_checked = 'off';
-    end
-    set(handles.add_cross_term_menubar,'Checked',cross_term_checked);
-end
+add_cross_term=get(hObject,'Value') ;
+handles.init_parameter.compute_cross_term_feature=add_cross_term;
 
-
-handles.init_parameter.compute_cross_term_feature = add_cross_term;
-
-if add_cross_term
+if get(hObject,'Value')
     message=sprintf(['This method is advised for the QDA and SVM classification.\n',...
         'The Cross terms will be computed and added to the Feature Matrix. \n' ...
         'The size of the new matrix is n(n+1)']);
@@ -1628,8 +1581,8 @@ if add_cross_term
     
     handles.feature_result=Sigma_feature_assembling(handles.init_method,...
         handles.init_parameter,handles.feature_result);
-    handles.FEM_add_cross_term.BackgroundColor	='g';
-    handles.FEM_add_cross_term.String ='Cross term(s) added';
+    hObject.BackgroundColor	='g';
+    hObject.String ='Cross term(s) added';
     
     % Display results
     if isfield(handles.feature_result,'nb_features')
@@ -1638,10 +1591,10 @@ if add_cross_term
         set(handles.FR_edit_nb_feature, 'String', handles.feature_result.nb_features);
     end
     % close the wainting bar
-    delete(h_wait)
+    delete(h_wait)    
 else
-    handles.FEM_add_cross_term.BackgroundColor	=[0.94 0.94 0.94];
-    handles.FEM_add_cross_term.String ='Add cross term(s)';
+    hObject.BackgroundColor	=[0.94 0.94 0.94];
+    hObject.String ='Add cross term(s)';
     if isempty(handles.feature_result)
         %msgbox('SIGMA >> Please Compute Feature Before' ,'SIGMA Message','warn');
         return
@@ -1950,10 +1903,11 @@ web(url)
 
 
 % --------------------------------------------------------------------
-function toolbar_screen_shot_ClickedCallback(hObject, eventdata, handles)
-% hObject    handle to toolbar_screen_shot (see GCBO)
+function toolbar_screen_shoot_ClickedCallback(hObject, eventdata, handles)
+% hObject    handle to toolbar_screen_shoot (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
 str = char(datetime); % creat the name of the output files
 % creat the default session name
 filename=['SIGMA_main_' str(1:end-9) '_' str(end-7:end-6) str(end-4:end-3)...
@@ -1973,13 +1927,8 @@ function FEM_open_folder_function_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 FEM_folder=fullfile(handles.init_parameter.sigma_directory,...
     'SIGMA_functions','features_extraction');
-% winopen(FEM_folder);
-if ispc
-    winopen(FEM_folder);
-end
-if ismac
-    macopen(FEM_folder);
-end
+winopen(FEM_folder);
+
 
 % --------------------------------------------------------------------
 function FR_open_ranking_method_mfile_Callback(hObject, eventdata, handles)
@@ -2201,12 +2150,6 @@ function add_cross_term_menubar_Callback(hObject, eventdata, handles)
 % hObject    handle to add_cross_term_menubar (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if strcmp(hObject.Checked,'on')
-    hObject.Checked = 'off';
-else
-    hObject.Checked = 'on';
-end
-guidata(hObject, handles);
 FEM_add_cross_term_Callback(hObject, eventdata, handles)
 
 % --------------------------------------------------------------------
@@ -2247,214 +2190,3 @@ function cross_validation_method_menubar_Callback(hObject, eventdata, handles)
 % hObject    handle to cross_validation_method_menubar (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-
-% --------------------------------------------------------------------
-
-
-
-
-function lda_menubar_Callback(hObject, eventdata, handles)
-% hObject    handle to lda_menubar (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-%% set the menu bar
-set(handles.lda_menubar,'Checked','on');
-set(handles.qda_menubar,'Checked','off');
-set(handles.svm_menubar,'Checked','off');
-
-%% set the push button
-set(handles.DC_rb_LDA,'Value',1);
-set(handles.DC_rb_QDA,'Value',0);
-set(handles.DC_rb_SVM,'Value',0);
-
-handles = Update_classification_settings(handles, hObject);
-Set_button_availability(handles, hObject)
-guidata(hObject, handles);
-% --------------------------------------------------------------------
-function qda_menubar_Callback(hObject, eventdata, handles)
-% hObject    handle to qda_menubar (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-%% set the menu bar
-set(handles.lda_menubar,'Checked','off');
-set(handles.qda_menubar,'Checked','on');
-set(handles.svm_menubar,'Checked','off');
-
-%% set the push button
-set(handles.DC_rb_LDA,'Value',0);
-set(handles.DC_rb_QDA,'Value',1);
-set(handles.DC_rb_SVM,'Value',0);
-
-handles = Update_classification_settings(handles, hObject);
-Set_button_availability(handles, hObject)
-guidata(hObject, handles);
-% --------------------------------------------------------------------
-function svm_menubar_Callback(hObject, eventdata, handles)
-% hObject    handle to svm_menubar (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-%% set the menu bar
-set(handles.lda_menubar,'Checked','off');
-set(handles.qda_menubar,'Checked','off');
-set(handles.svm_menubar,'Checked','on');
-
-%% set the push button
-set(handles.DC_rb_LDA,'Value',0);
-set(handles.DC_rb_QDA,'Value',0);
-set(handles.DC_rb_SVM,'Value',1);
-
-handles = Update_classification_settings(handles, hObject);
-Set_button_availability(handles, hObject)
-guidata(hObject, handles);
-
-
-% --------------------------------------------------------------------
-function loso_menubar_Callback(hObject, eventdata, handles)
-% hObject    handle to loeo_menubar (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-set(handles.loso_menubar,'Checked','on');
-set(handles.loeo_menubar,'Checked','off');
-
-%% set the push button
-set(handles.DC_cb_LOSO,'Value',1);
-set(handles.DC_cb_LOEO,'Value',0);
-
-handles = Update_classification_settings(handles, hObject);
-Set_button_availability(handles, hObject)
-guidata(hObject, handles);
-
-% --------------------------------------------------------------------
-function loeo_menubar_Callback(hObject, eventdata, handles)
-% hObject    handle to loeo_menubar (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-set(handles.loso_menubar,'Checked','off');
-set(handles.loeo_menubar,'Checked','on');
-
-%% set the push button
-set(handles.DC_cb_LOSO,'Value',0);
-set(handles.DC_cb_LOEO,'Value',1);
-
-handles = Update_classification_settings(handles, hObject);
-Set_button_availability(handles, hObject)
-guidata(hObject, handles);
-
-
-% --------------------------------------------------------------------
-function ranking_results_menubar_Callback(hObject, eventdata, handles)
-% hObject    handle to ranking_results_menubar (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --------------------------------------------------------------------
-function feature_selection_menubar_Callback(hObject, eventdata, handles)
-% hObject    handle to feature_selection_menubar (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --------------------------------------------------------------------
-function set_number_feature_to_rank_Callback(hObject, eventdata, handles)
-% hObject    handle to set_number_feature_to_rank (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-%% set the menu bar
-set(handles.set_number_feature_to_rank,'Checked','on');
-set(handles.set_probe_feature_to_rank,'Checked','off');
-
-%% set the push button
-set(handles.FR_rb_nb_feature,'Value',1);
-set(handles.FR_rb_probe_variable,'Value',0);
-
-
-% the value should be set from sub gui
-%FR_edit_nb_feature
-
-
-% Call the  edit gui
-uiwait(input_number_feature);
-nb_feature = getappdata(0,'nb_feature');
-set(handles.FR_edit_nb_feature,'String', nb_feature);
-
-handles = Update_feature_ranking(handles, hObject);
-Set_button_availability(handles, hObject)
-guidata(hObject, handles);
-
-% --------------------------------------------------------------------
-function set_probe_feature_to_rank_Callback(hObject, eventdata, handles)
-% hObject    handle to set_probe_feature_to_rank (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-%% set the menu bar
-set(handles.set_number_feature_to_rank,'Checked','off');
-set(handles.set_probe_feature_to_rank,'Checked','on');
-
-%% set the push button
-set(handles.FR_rb_nb_feature,'Value',0);
-set(handles.FR_rb_probe_variable,'Value',1);
-
-% the value should be set from sub gui
-%
-% Call the  edit gui
-uiwait(input_probe_feature);
-probe_feature = getappdata(0,'probe_feature');
-set(handles.FR_edit_probability_probe,'String', probe_feature);
-
-handles = Update_feature_ranking(handles, hObject);
-Set_button_availability(handles, hObject)
-guidata(hObject, handles);
-
-
-% --------------------------------------------------------------------
-function ranking_method_menubar_Callback(hObject, eventdata, handles)
-% hObject    handle to ranking_method_menubar (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --------------------------------------------------------------------
-function ofr_menubar_Callback(hObject, eventdata, handles)
-% hObject    handle to ofr_menubar (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-set(handles.ofr_menubar,'Checked','on');
-set(handles.other_method_menubar,'Checked','off');
-
-%% set the push button
-set(handles.FR_rb_GS,'Value',1);
-set(handles.FR_rb_other_adv_method,'Value',0);
-
-handles = Update_feature_ranking(handles, hObject);
-Set_button_availability(handles, hObject)
-guidata(hObject, handles);
-
-% --------------------------------------------------------------------
-function other_method_menubar_Callback(hObject, eventdata, handles)
-% hObject    handle to other_method_menubar (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% hObject    handle to ofr_menubar (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-set(handles.ofr_menubar,'Checked','off');
-set(handles.other_method_menubar,'Checked','on');
-
-%% set the push button
-set(handles.FR_rb_GS,'Value',0);
-set(handles.FR_rb_other_adv_method,'Value',1);
-
-handles = Update_feature_ranking(handles, hObject);
-Set_button_availability(handles, hObject)
-guidata(hObject, handles);
-
-%% Rajouter par Nessim le 28/06/2018
-% --- Executes on button press in manual_selection.
-function manual_selection_Callback(hObject, eventdata, handles)
-% hObject    handle to manual_selection (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-Choose_operating_point(handles,hObject);
